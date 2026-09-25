@@ -1,0 +1,38 @@
+# Sarment — Instructions pour Claude Code
+
+Contexte produit complet, stack, structure de dossiers et base de données : voir @README.md. Ce fichier ne répète pas ce contexte — il contient les règles à respecter pendant le développement.
+
+## Périmètre fonctionnel — ne pas dépasser
+
+**Ne jamais implémenter : assistant IA, module Administratif, module Vente.** Ces fonctionnalités ont été explicitement retirées du projet. Si une tâche semble s'en rapprocher, demander confirmation plutôt que de les construire.
+
+L'écran d'accueil ne doit avoir que 2 entrées : **Gestion parcellaire** et **Travaux en cave**. Ne pas ajouter d'entrée supplémentaire sans validation explicite.
+
+## Le prototype comme référence
+
+`sarment-prototype-V2.1.html` (dans `/docs` ou `/reference`) montre l'apparence et la navigation cibles. Reproduire fidèlement ce qu'il montre (palette, typographie, disposition, parcours utilisateur) — ne pas réinventer un design différent, même si le code du prototype lui-même n'est pas repris.
+
+## Règles métier non négociables
+
+- **Inscription patron** : email, mot de passe, et nom complet de l'exploitation (obligatoire, mais pas unique en base — ne pas ajouter de contrainte `UNIQUE` sur ce champ).
+- **Comptes employés** : toujours créés par invitation Supabase Auth vers l'e-mail réel de l'employé. Ne jamais générer d'e-mail technique ou fictif pour satisfaire une contrainte NOT NULL.
+
+## Sécurité — à appliquer systématiquement
+
+- Row-Level Security (RLS) activée sur toutes les tables contenant des données d'exploitation, dès leur création — pas de table sans policy.
+- Toute nouvelle table : ses policies RLS doivent être définies dans la **même migration** que sa création, jamais ajoutées après coup.
+- `SUPABASE_SERVICE_ROLE_KEY` : jamais côté client, jamais committée. Utiliser uniquement dans du code serveur (route handlers, server actions).
+- Toute modification de schéma passe par une migration versionnée dans `supabase/migrations` — jamais de modification manuelle dans le dashboard Supabase en production.
+
+## Conventions de code
+
+*(à compléter au fil du développement : nommage, gestion d'état, structure des composants, tests, etc.)*
+
+## Commandes courantes
+
+```
+npm run dev       # serveur de développement
+npm run build     # build de production
+npm run lint      # linting
+```
+*(à ajuster une fois le projet initialisé)*
